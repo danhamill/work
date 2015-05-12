@@ -5,7 +5,7 @@ import osgeo.osr as osr
 import csv
 
 # use a dictionary reader so we can access by field name
-reader = csv.DictReader(open("Segment_029_2009_x_y_sedclass_dt_topo_25cm.xyz","rb"),
+reader = csv.DictReader(open("C:/workspace/CM/mb_sed_class/Segment_029_2009_x_y_sedclass_dt_topo_25cm.xyz","rb"),
     delimiter=',',
     quoting=csv.QUOTE_NONE)
 
