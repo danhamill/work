@@ -12,7 +12,7 @@ reader = csv.DictReader(open("C:/workspace/CM/mb_sed_class/Segment_029_2009_x_y_
 # set up the shapefile driver
 driver = ogr.GetDriverByName("ESRI Shapefile")
 
-# create the data source
+#create the data source
 data_source = driver.CreateDataSource("C:/workspace/CM/mb_sed_class/output/layer.shp")
 
 # create the spatial reference, AZ Central SP
