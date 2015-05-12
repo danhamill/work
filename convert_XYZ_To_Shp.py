@@ -13,7 +13,7 @@ reader = csv.DictReader(open("C:/workspace/CM/mb_sed_class/Segment_029_2009_x_y_
 driver = ogr.GetDriverByName("ESRI Shapefile")
 
 # create the data source
-data_source = driver.CreateDataSource("layer.shp")
+data_source = driver.CreateDataSource("C:/workspace/CM/mb_sed_class/output/layer.shp")
 
 # create the spatial reference, AZ Central SP
 srs = osr.SpatialReference()
@@ -24,7 +24,7 @@ layer = data_source.CreateLayer("Layer", srs, ogr.wkbPoint)
 
 # Add the fields we're interested in
 field_name = ogr.FieldDefn("Easting", ogr.OFTReal)
-field_name.SetWidth(24)
+#field_name.SetWidth(100)
 layer.CreateField(field_name)
 layer.CreateField(ogr.FieldDefn("Northing", ogr.OFTReal))
 layer.CreateField(ogr.FieldDefn("Sed_Class", ogr.OFTReal))
