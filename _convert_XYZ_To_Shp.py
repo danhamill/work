@@ -1,4 +1,5 @@
 # Parse a delimited text file of volcano data and create a shapefile
+#Adpated from https://pcjericks.github.io/py-gdalogr-cookbook/vector_layers.html#create-a-new-shapefile-and-add-data
 
 import osgeo.ogr as ogr
 import osgeo.osr as osr
@@ -8,28 +9,32 @@ import os
 
 print("I made it to line 9")
 root = "c:/workspace/CM/mb_sed_class/"
-out = "c:/workspace/CM/mb_sed_class/output/"
+out = "c:/workspace/CM/mb_sed_class/output2/"
 
 list = glob(root + '*.xyz')
 # use a dictionary reader so we can access by field name
 for afile in list:
-	print (afile)
+	print (afile + "\n")
 	reader = csv.DictReader(open(afile,"rb"),
+		fieldnames=("Easting","Northing","Sed_Class"),
 		delimiter=',',
 		quoting=csv.QUOTE_NONE)
 	
 	# set up the shapefile driver
 	driver = ogr.GetDriverByName("ESRI Shapefile")
 	
+	filename = afile[29:71]
 	#create the data source
-	data_source = driver.CreateDataSource(out + afile[0:42])
+	print ("I made it to line 26 \n") 
+	print (out + filename)
+	data_source = driver.CreateDataSource(out + filename + ".shp")
 	
 	# create the spatial reference, AZ Central SP
 	srs = osr.SpatialReference()
 	srs.ImportFromEPSG(26949)
 	
 	# create the layer
-	layer = data_source.CreateLayer(afile, srs, ogr.wkbPoint)
+	layer = data_source.CreateLayer(filename, srs, ogr.wkbPoint)
 	
 	# Add the fields we're interested in
 	field_name = ogr.FieldDefn("Easting", ogr.OFTReal)
@@ -48,7 +53,7 @@ for afile in list:
 		feature.SetField("Sed_Class", row['Sed_Class'])
 	
 		# create the WKT for the feature using Python string formatting
-		wkt = "POINT(%f %f)" %  (float(row['Northing']) , float(row['Easting']))
+		wkt = "POINT(%f %f)" %  (float(row['Easting']) , float(row['Northing']))
 	
 		# Create the point from the Well Known Txt
 		point = ogr.CreateGeometryFromWkt(wkt)
