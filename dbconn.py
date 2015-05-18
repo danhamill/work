@@ -1,5 +1,5 @@
 #On windows psycopg2 cant be imported from pip psycopg2
-#Add psycopg2 from http://www.stickpeople.com/projects/python/win-psycopg/index.html 
+#Import from pip install git+https://github.com/nwcell/psycopg2-windows.git@win64-py27#egg=psycopg2
 #To find all the correct dll's
 
 import psycopg2
