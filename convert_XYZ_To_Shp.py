@@ -6,6 +6,7 @@ import csv
 
 # use a dictionary reader so we can access by field name
 reader = csv.DictReader(open("C:/workspace/CM/mb_sed_class/Segment_029_2009_x_y_sedclass_dt_topo_25cm.xyz","rb"),
+    fieldnames=("Easting","Northing","Sed_Class"),
     delimiter=',',
     quoting=csv.QUOTE_NONE)
 
@@ -13,14 +14,14 @@ reader = csv.DictReader(open("C:/workspace/CM/mb_sed_class/Segment_029_2009_x_y_
 driver = ogr.GetDriverByName("ESRI Shapefile")
 
 #create the data source
-data_source = driver.CreateDataSource("C:/workspace/CM/mb_sed_class/output/layer.shp")
+data_source = driver.CreateDataSource("C:/workspace/CM/mb_sed_class/output/Segment_029_2009.shp")
 
 # create the spatial reference, AZ Central SP
 srs = osr.SpatialReference()
 srs.ImportFromEPSG(26949)
 
 # create the layer
-layer = data_source.CreateLayer("Layer", srs, ogr.wkbPoint)
+layer = data_source.CreateLayer("Segment_029_2009", srs, ogr.wkbPoint)
 
 # Add the fields we're interested in
 field_name = ogr.FieldDefn("Easting", ogr.OFTReal)
@@ -39,7 +40,7 @@ for row in reader:
   feature.SetField("Sed_Class", row['Sed_Class'])
 
   # create the WKT for the feature using Python string formatting
-  wkt = "POINT(%f %f)" %  (float(row['Northing']) , float(row['Easting']))
+  wkt = "POINT(%f %f)" %  (float(row['Easting']) , float(row['Northing']))
 
   # Create the point from the Well Known Txt
   point = ogr.CreateGeometryFromWkt(wkt)
