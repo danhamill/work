@@ -8,10 +8,10 @@ from glob import glob
 import os
 
 print("I made it to line 9")
-root = "c:/workspace/CM/mb_sed_class/"
-out = "c:/workspace/CM/mb_sed_class/output2/"
+root = "C:/workspace/CM/mb_sed_class/mb_sed_class"
+out = "c:/workspace/CM/mb_sed_class/output2012/"
 
-list = glob(root + '*.xyz')
+list = glob(root + '/*.xyz')
 # use a dictionary reader so we can access by field name
 for afile in list:
 	print (afile + "\n")
@@ -23,10 +23,10 @@ for afile in list:
 	# set up the shapefile driver
 	driver = ogr.GetDriverByName("ESRI Shapefile")
 	
-	filename = afile[29:71]
+	filename = os.path.basename(os.path.splitext(afile)[0])
 	#create the data source
 	print ("I made it to line 26 \n") 
-	print (out + filename)
+	print (filename)
 	data_source = driver.CreateDataSource(out + filename + ".shp")
 	
 	# create the spatial reference, AZ Central SP
