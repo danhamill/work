@@ -1,3 +1,5 @@
+#encoding: utf-8
+
 # Parse a delimited text file of volcano data and create a shapefile
 #Adpated from https://pcjericks.github.io/py-gdalogr-cookbook/vector_layers.html#create-a-new-shapefile-and-add-data
 
@@ -7,9 +9,8 @@ import csv
 from glob import glob
 import os
 
-print("I made it to line 9")
-root = "C:/workspace/CM/mb_sed_class/mb_sed_class"
-out = "c:/workspace/CM/mb_sed_class/output2012/"
+root = "C:\\workspace\\Reach_4a\\XYZ"
+out = "C:\\workspace\\Reach_4a\\test_out\\"
 
 list = glob(root + '/*.xyz')
 # use a dictionary reader so we can access by field name
@@ -24,9 +25,8 @@ for afile in list:
 	driver = ogr.GetDriverByName("ESRI Shapefile")
 	
 	filename = os.path.basename(os.path.splitext(afile)[0])
-	#create the data source
-	print ("I made it to line 26 \n") 
-	print (filename)
+	print filename
+    #create the data source
 	data_source = driver.CreateDataSource(out + filename + ".shp")
 	
 	# create the spatial reference, AZ Central SP
