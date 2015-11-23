@@ -39,22 +39,23 @@ for afile in fnames:
             y.append(b)
             tex.append(c)
 
+# merge flatten and stack
 X = np.asarray(x,'float')
 X = X.flatten()
 TEX = np.asarray(tex,'float')
 TEX=TEX.flatten()
-# merge flatten and stack
 Y = np.asarray(y,'float')
-Y = Y.flatten()            
+Y = Y.flatten()  
+del x, y, tex    
+      
 trans =  pyproj.Proj(init="epsg:26949")        
-res = 0.25
 fig = plt.figure(frameon=False)
 ax = plt.Axes(fig, [0., 0., 1., 1.], )
 ax.set_axis_off()
 glon, glat = trans(X, Y, inverse=True)
 fig.add_axes(ax)
 
-del tex, x,y,X,Y
+del X,Y
 
 print 'now mapping'
 cs2cs_args = "epsg:26949"
@@ -64,7 +65,7 @@ map = Basemap(projection='merc', epsg=cs2cs_args.split(':')[1], llcrnrlon=np.min
 map.arcgisimage(server='http://server.arcgisonline.com/ArcGIS', service='World_Imagery', xpixels=1000, ypixels=None, dpi=300)
 
 x,y = map.projtran(glon, glat)
-
+del glon, glat
 map.scatter(x.flatten(), y.flatten(), 0.5, TEX.flatten(), cmap='YlOrRd',linewidth = '0')
 os.chdir(r'C:\Users\dan\Desktop')
 plt.savefig('April_2015.png',bbox_inches='tight',dpi=1000, transparent=True)
