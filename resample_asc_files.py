@@ -1,17 +1,5 @@
 from pyresample import geometry, kd_tree
 from joblib import cpu_count
-import numpy as np
-import pyproj
-
-
-trans =  pyproj.Proj(init="epsg:26949")
-
-fIn = "C:\\users\\dan\\Reach_4a\\humminbird\\April2015\\R02027\\x_y_class0.asc"
-fOut = 'C:\\users\\dan\\Reach_4a\\humminbird\\April2015\\R02027\\x_y_class0_gridded.asc'
-
-
-from pyresample import geometry, kd_tree
-from joblib import cpu_count
 from glob import glob
 import numpy as np
 import pyproj
