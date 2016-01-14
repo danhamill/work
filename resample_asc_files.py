@@ -35,13 +35,14 @@ def trythis(fOut,fIn):
     gridded_result = np.reshape(result,np.shape(longrid))
     mask = gridded_result.mask==True
     with open(fOut, 'wb')as f:
-        np.savetxt(f, np.hstack((ascol(grid_x[mask==False].flatten()),ascol(grid_y[mask==False].flatten()),ascol(gridded_result[mask==False].flatten()))),delimiter=' ', fmt="%8.6f %8.6f %1.6f")
+        np.savetxt(f, np.hstack((ascol(grid_x[mask==False].flatten()),ascol(grid_y[mask==False].flatten()),ascol(gridded_result[mask==False].flatten()))),delimiter=' ', fmt="%8.6f %8.6f %1.6f")   
     f.close()
+    del gridded_result, mask, result
     
 if  __name__ == '__main__':
     WrkFolder = os.path.normpath(os.path.join('D:\\','2015_09_R4a'))
     Scan_List = glob(WrkFolder+os.sep+'R*')
-    for scan in Scan_List:
+    for scan in Scan_List[2:]:
         point_cloud_list = glob(scan + os.sep + 'x_y_class[0-20].asc')
         for point_cloud in point_cloud_list:
             fIn = point_cloud
