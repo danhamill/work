@@ -69,6 +69,7 @@ def trythis(fIn,scale_par,scale_mer,font_size,fOut):
     for t in cbr.ax.get_yticklabels():
         t.set_fontsize(font_size)
     print 'Saving...'
+    fig.set_size_inches(3.55,3.15)
     plt.savefig(fOut, bbox_inches='tight',dpi=1000, transparent=False)
     print 'Done!'
     
