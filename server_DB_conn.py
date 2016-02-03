@@ -1,6 +1,7 @@
 #On windows psycopg2 cant be imported from pip psycopg2
 #Import from pip install git+https://github.com/nwcell/psycopg2-windows.git@win64-py27#egg=psycopg2
 #To find all the correct dll's
+#dont forget to set up ssh tunnel forwarding to local host from cmd
 
 import psycopg2
 
