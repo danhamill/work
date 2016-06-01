@@ -20,6 +20,7 @@ def ascol( arr ):
 
 def trythis(fOut,fIn):
     names = "Easting,Northing,Elevation"
+    print 'Reading input point cloud...'
     d = np.genfromtxt(fIn, dtype=float, delimiter =' ', names=names)
     humlon, humlat = trans(d['Easting'],d['Northing'],inverse=True)
     orig_def = geometry.SwathDefinition(lons=humlon.flatten(), lats=humlat.flatten())
@@ -27,8 +28,9 @@ def trythis(fOut,fIn):
     grid_x, grid_y = np.meshgrid( np.arange(np.floor(np.min(d['Easting'])), np.ceil(np.max(d['Easting'])), res), np.arange(np.floor(np.min(d['Northing'])), np.ceil(np.max(d['Northing'])), res) )
     longrid, latgrid = trans(grid_x, grid_y, inverse=True)
     target_def = geometry.SwathDefinition(lons=longrid.flatten(), lats=latgrid.flatten())
+    print 'Now Gridding...'
     result = kd_tree.resample_nearest(orig_def, d['Elevation'].flatten(), target_def, radius_of_influence=1, fill_value=None, nprocs = cpu_count()-2)
-    
+    print 'Done!'
     del d
     
     gridded_result = np.reshape(result,np.shape(longrid))
@@ -42,14 +44,3 @@ if  __name__ == '__main__':
     fIn = r'C:\temp\Aug2013_mb\mb060861r\x_y_z.asc'
     fOut = r'"C:\temp\Aug2013_mb\mb060861r\x_Y_z_resampled.asc'
     trythis(fOut,fIn)
-    # WrkFolder = os.path.normpath(os.path.join('D:\\','R4a','2014_04'))
-    # Scan_List = glob(WrkFolder+os.sep+'R*')
-    # for scan in Scan_List:
-        # point_cloud_list = glob(scan + os.sep + 'x_y_c*')
-        # print point_cloud_list
-        # for point_cloud in point_cloud_list:
-            # fIn = point_cloud
-            # scan_name = right(os.path.split(point_cloud)[0],6)
-            # fOut = os.path.split(point_cloud)[0] + os.sep + scan_name + os.path.split(point_cloud)[1]
-            # print 'Now Gridding ' + point_cloud
-            # trythis(fOut,fIn)
