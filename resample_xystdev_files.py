@@ -19,35 +19,28 @@ def ascol( arr ):
    return arr 
 
 def trythis(fOut,fIn):
-    names = "Easting,Northing,Texture"
-    d = np.genfromtxt(fIn, dtype=float, delimiter =' ', names=names)
+    names = "Easting,Northing,stdev"
+    print 'Reading input point cloud...'
+    d = np.genfromtxt(fIn, dtype=float, delimiter =',', names=names,skip_header=1)
     humlon, humlat = trans(d['Easting'],d['Northing'],inverse=True)
     orig_def = geometry.SwathDefinition(lons=humlon.flatten(), lats=humlat.flatten())
     res = 0.25
     grid_x, grid_y = np.meshgrid( np.arange(np.floor(np.min(d['Easting'])), np.ceil(np.max(d['Easting'])), res), np.arange(np.floor(np.min(d['Northing'])), np.ceil(np.max(d['Northing'])), res) )
     longrid, latgrid = trans(grid_x, grid_y, inverse=True)
     target_def = geometry.SwathDefinition(lons=longrid.flatten(), lats=latgrid.flatten())
-    result = kd_tree.resample_nearest(orig_def, d['Texture'].flatten(), target_def, radius_of_influence=1, fill_value=None, nprocs = cpu_count())
-    
+    print 'Now Gridding...'
+    result = kd_tree.resample_nearest(orig_def, d['stdev'].flatten(), target_def, radius_of_influence=1, fill_value=None, nprocs = cpu_count()-2)
+    print 'Done!'
     del d
     
     gridded_result = np.reshape(result,np.shape(longrid))
     mask = gridded_result.mask==True
     with open(fOut, 'wb')as f:
-        np.savetxt(f, np.hstack((ascol(grid_x[mask==False].flatten()),ascol(grid_y[mask==False].flatten()),ascol(gridded_result[mask==False].flatten()))),delimiter=' ', fmt="%8.6f %8.6f %1.6f")   
+        np.savetxt(f, np.hstack((ascol(grid_x[mask==False].flatten()),ascol(grid_y[mask==False].flatten()),ascol(gridded_result[mask==False].flatten()))),delimiter=' ', fmt="%8.6f %8.6f %8.6f")   
     f.close()
     del gridded_result, mask, result
     
 if  __name__ == '__main__':
-    WrkFolder = os.path.normpath(os.path.join('C:\\','workspace','Reach_4a','2012_05'))
-    Scan_List = glob(WrkFolder+os.sep+'R*')
-    for scan in Scan_List:
-        point_cloud_list = glob(scan + os.sep + 'x_y_s*')
-        print point_cloud_list
-        for point_cloud in point_cloud_list:
-            fIn = point_cloud
-            scan_name = right(os.path.split(point_cloud)[0],6)
-            fOut = os.path.split(point_cloud)[0] + os.sep + scan_name + os.path.split(point_cloud)[1]
-            print fOut
-            print 'Now Gridding ' + point_cloud
-            trythis(fOut,fIn)
+    fIn = r"C:\workspace\Reach_4a\Multibeam\xyz\2012_05\stats\mb_2102_stdev_merge.asc"
+    fOut = r"C:\workspace\Reach_4a\Multibeam\xyz\2012_05\stats\mb_2102_stdev_025m.asc"
+    trythis(fOut,fIn)

@@ -21,7 +21,7 @@ def ascol( arr ):
 def trythis(fOut,fIn):
     names = "Easting,Northing,Elevation"
     print 'Reading input point cloud...'
-    d = np.genfromtxt(fIn, dtype=float, delimiter =' ', names=names)
+    d = np.genfromtxt(fIn, dtype=float, delimiter =' ', names=names,)
     humlon, humlat = trans(d['Easting'],d['Northing'],inverse=True)
     orig_def = geometry.SwathDefinition(lons=humlon.flatten(), lats=humlat.flatten())
     res = 0.25
@@ -32,15 +32,15 @@ def trythis(fOut,fIn):
     result = kd_tree.resample_nearest(orig_def, d['Elevation'].flatten(), target_def, radius_of_influence=1, fill_value=None, nprocs = cpu_count()-2)
     print 'Done!'
     del d
-    
     gridded_result = np.reshape(result,np.shape(longrid))
     mask = gridded_result.mask==True
+    print "Writing to text file..."
     with open(fOut, 'wb')as f:
         np.savetxt(f, np.hstack((ascol(grid_x[mask==False].flatten()),ascol(grid_y[mask==False].flatten()),ascol(gridded_result[mask==False].flatten()))),delimiter=' ', fmt="%8.6f %8.6f %8.6f")   
     f.close()
     del gridded_result, mask, result
     
 if  __name__ == '__main__':
-    fIn = r'C:\temp\Aug2013_mb\mb060861r\x_y_z.asc'
-    fOut = r'"C:\temp\Aug2013_mb\mb060861r\x_Y_z_resampled.asc'
+    fIn = r"C:\workspace\Reach_4a\Multibeam\xyz\2012_05\mb061280r_gold_2012_all.xyz"
+    fOut = r"C:\workspace\Reach_4a\Multibeam\xyz\2012_05\mb061280r_gold_2012_025m.xyz"
     trythis(fOut,fIn)
