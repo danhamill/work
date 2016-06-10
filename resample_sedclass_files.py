@@ -22,10 +22,11 @@ def resolution(min_coord,max_coord,res):
         min_coord = min_coord -1
         print min_coord
     return min_coord, max_coord
+    
 def trythis(fOut,fIn):
     names = "Easting,Northing,stdev"
     print 'Reading input point cloud...'
-    d = np.genfromtxt(fIn, dtype=float, delimiter =',', names=names,skip_header=1)
+    d = np.genfromtxt(fIn, dtype=float, delimiter =' ', names=names)
     humlon, humlat = trans(d['Easting'],d['Northing'],inverse=True)
     orig_def = geometry.SwathDefinition(lons=humlon.flatten(), lats=humlat.flatten())
     res = 3
@@ -34,6 +35,7 @@ def trythis(fOut,fIn):
     min_E, max_E = resolution(np.floor(np.min(d['Easting'])),np.ceil(np.max(d['Easting'])),res)
     min_N, max_N = resolution(np.floor(np.min(d['Northing'])),np.ceil(np.max(d['Northing'])),res)
     grid_x, grid_y = np.meshgrid(np.arange(min_E, max_E, res), np.arange(min_N, max_N, res))
+    longrid, latgrid = trans(grid_x, grid_y, inverse=True)
     target_def = geometry.SwathDefinition(lons=longrid.flatten(), lats=latgrid.flatten())
     print 'Now Gridding...'
     result = kd_tree.resample_nearest(orig_def, d['stdev'].flatten(), target_def, radius_of_influence=1, fill_value=None, nprocs = cpu_count()-2)
@@ -48,6 +50,6 @@ def trythis(fOut,fIn):
     del gridded_result, mask, result
     
 if  __name__ == '__main__':
-    fIn = r"C:\workspace\Reach_4a\Multibeam\xyz\2012_05\stats\mb_2102_stdev_merge.asc"
-    fOut = r"C:\workspace\Reach_4a\Multibeam\xyz\2012_05\stats\mb_2102_stdev_3m.asc"
+    fIn = r"C:\workspace\Reach_4a\Multibeam\mb_sed_class\Segment_060_2012_x_y_sedclass_dt_5class_25cm.xyz"
+    fOut = r"C:\workspace\Reach_4a\Multibeam\mb_sed_class\Segment_060_2012_x_y_sedclass_dt_5class_3m.xyz"
     trythis(fOut,fIn)

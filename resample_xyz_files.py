@@ -17,15 +17,22 @@ def ascol( arr ):
    '''
    if len( arr.shape ) == 1: arr = arr.reshape( ( arr.shape[0], 1 ) )
    return arr 
-
+def resolution(min_coord,max_coord,res):
+    while (max_coord-min_coord) % res != 0:
+        min_coord = min_coord -1
+    return min_coord, max_coord
 def trythis(fOut,fIn):
     names = "Easting,Northing,Elevation"
     print 'Reading input point cloud...'
     d = np.genfromtxt(fIn, dtype=float, delimiter =' ', names=names,)
     humlon, humlat = trans(d['Easting'],d['Northing'],inverse=True)
     orig_def = geometry.SwathDefinition(lons=humlon.flatten(), lats=humlat.flatten())
-    res = 0.25
-    grid_x, grid_y = np.meshgrid( np.arange(np.floor(np.min(d['Easting'])), np.ceil(np.max(d['Easting'])), res), np.arange(np.floor(np.min(d['Northing'])), np.ceil(np.max(d['Northing'])), res) )
+    res = 3
+    
+    #Check to see if the grid size is evenly divisible by resolution
+    min_E, max_E = resolution(np.floor(np.min(d['Easting'])),np.ceil(np.max(d['Easting'])),res)
+    min_N, max_N = resolution(np.floor(np.min(d['Northing'])),np.ceil(np.max(d['Northing'])),res)
+    grid_x, grid_y = np.meshgrid(np.arange(min_E, max_E, res), np.arange(min_N, max_N, res))
     longrid, latgrid = trans(grid_x, grid_y, inverse=True)
     target_def = geometry.SwathDefinition(lons=longrid.flatten(), lats=latgrid.flatten())
     print 'Now Gridding...'
@@ -42,5 +49,5 @@ def trythis(fOut,fIn):
     
 if  __name__ == '__main__':
     fIn = r"C:\workspace\Reach_4a\Multibeam\xyz\2012_05\mb061280r_gold_2012_all.xyz"
-    fOut = r"C:\workspace\Reach_4a\Multibeam\xyz\2012_05\mb061280r_gold_2012_025m.xyz"
+    fOut = r"C:\workspace\Reach_4a\Multibeam\xyz\2012_05\mb061280r_gold_2012_3m.xyz"
     trythis(fOut,fIn)
